@@ -1,0 +1,74 @@
+﻿<local:UserControlBase x:Class="Festival.App.Views.EventListView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Festival.App.Views"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:system="clr-namespace:System;assembly=mscorlib" 
+      xmlns:viewmodels="clr-namespace:Festival.App.ViewModels" 
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      mc:Ignorable="d"
+      d:DesignHeight="500" d:DesignWidth="200"
+      d:DataContext="{d:DesignInstance viewmodels:EventListViewModel}">
+    <local:UserControlBase.Resources>
+        <Style TargetType="Button">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="MaxHeight" Value="40"/>
+            <Setter Property="MaxWidth" Value="150"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </local:UserControlBase.Resources>
+
+
+
+    <Grid x:Name="topLevel" Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="8*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <ItemsControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding StageCollection}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Content="{Binding Name}"/>
+                        <ListBox x:Name="EventListBox" Grid.Row="1" ItemsSource="{Binding Events}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.EventSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserControlBase}}}"
+                                                           CommandParameter="{Binding ElementName=EventListBox, Path=SelectedItem}" />
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.EventSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UserControlBase}}}"
+                                                           CommandParameter="{Binding ElementName=EventListBox, Path=SelectedItem}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0" Content="{Binding StartTime}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Button Command="{Binding EventNewCommand}" Grid.Column="0" Grid.Row="1" Content="Přidat event"></Button>
+    </Grid>
+</local:UserControlBase>
